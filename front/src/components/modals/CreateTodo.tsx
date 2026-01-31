@@ -1,25 +1,33 @@
 import { Box, Button, Modal, TextField, Typography, useTheme } from "@mui/material";
+import { useTodo } from "../../composables/todoHook";
+import { useState } from "react";
 
 /*
 Components todo
 */
 type Props = {
-    onClose : () => void
-    open : boolean
+    onClose : () => void,
+    open : boolean,
+    onCreate : (title : string, description : string) => void
 }
 
 /*
 Modal to create todo
 */
-export const CreateTodo = ({onClose, open} : Props) => {
+export const CreateTodo = ({onClose, open, onCreate} : Props) => {
     //Application theme
     const theme = useTheme();
+
+    //Form data
+    const [title, setTitle] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
 
     /*
     Create new todo
     */
-    const handleSubmit = () => {
-        console.log("send !");
+    const handleSubmit = (event: React.FormEvent) => {
+        event?.preventDefault();
+        onCreate(title, description);
     };
 
     /*
@@ -46,8 +54,23 @@ export const CreateTodo = ({onClose, open} : Props) => {
                 </div>
 
                 <form action="" onSubmit={handleSubmit} className="flex flex-col space-y-3">
-                    <TextField id="outlined-basic" label="Titre" variant="outlined" required={true}/>
-                    <TextField id="outlined-basic" label="Description" variant="outlined" />
+                    <TextField 
+                        id="outlined-basic" 
+                        label="Titre" 
+                        variant="outlined" 
+                        required={true} 
+                        value={title} 
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
+
+                    <TextField 
+                        id="outlined-basic" 
+                        label="Description" 
+                        variant="outlined" 
+                        value={description} 
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+
                     <Button variant="contained" type="submit">Créer</Button>
                     <Button variant="outlined" onClick={handleClose}>Retour</Button>
                 </form>

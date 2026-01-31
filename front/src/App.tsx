@@ -1,10 +1,11 @@
-import { createTheme, CssBaseline, ThemeProvider } from "@mui/material"
+import { CircularProgress, createTheme, CssBaseline, ThemeProvider } from "@mui/material"
 import { TodoHeader } from "./components/TodoHeader";
 import { useState } from "react";
 import type { Todo } from "./models/todoModel";
 import { TodoList } from "./components/TodoList";
 import { mockTodos } from "./mocks/mockTodos";
 import { CreateTodo } from "./components/modals/CreateTodo";
+import { useTodo } from "./composables/todoHook";
 
 const lightTheme = createTheme({
   palette: {
@@ -13,8 +14,8 @@ const lightTheme = createTheme({
 });
 
 function App() {
-  //Todo arrays
-  const [todos, setTodos] = useState<Todo[]>(mockTodos);
+  //Todos
+  const {todos, newTodo, fetchTodos, error, loading} = useTodo();
 
   //Search bar filter
   const [titleFilter, setTitleFilter] = useState<string | null>(null);
@@ -30,6 +31,20 @@ function App() {
     setCreateOpen(false);
   };
 
+  /*
+  Checked if the data is being loaded
+  */
+  if (loading){
+    return <CircularProgress/>;
+  }
+
+  /*
+  Checked error
+  */
+  if(error){
+    return <p>Erreur : {error}</p>
+  }
+
   return (
     <>
       <ThemeProvider theme={lightTheme}>
@@ -37,7 +52,10 @@ function App() {
 
         <div className="flex flex-col space-y-10 items-center justify-center h-screen">
 
-          <CreateTodo open={createOpen} onClose={handleClose}/>
+          <CreateTodo
+           open={createOpen} 
+           onClose={handleClose}
+            onCreate={(title, description) => newTodo(title, description)}/>
 
           {/*Search Bar */}
           <div className="sticky top-0 z-10 pt-10">
