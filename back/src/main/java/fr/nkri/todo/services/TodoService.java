@@ -2,6 +2,7 @@ package fr.nkri.todo.services;
 
 import fr.nkri.todo.dtos.TodoCreateDTO;
 import fr.nkri.todo.dtos.TodoUpdateDTO;
+import fr.nkri.todo.exceptions.TodoException;
 import fr.nkri.todo.models.Todo;
 import fr.nkri.todo.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class TodoService {
      */
     public Todo createTodo(final TodoCreateDTO dto) {
         if(this.todoRepository.existsByTitle(dto.title())){
-            throw new RuntimeException("La tâche existe déjà");
+            throw new TodoException("La tâche existe déjà");
         }
 
         final Todo newTodo = new Todo(dto.title(), dto.description());
@@ -59,7 +60,7 @@ public class TodoService {
         final Optional<Todo> todo = this.todoRepository.findById(dto.id());
 
         if(!todo.isPresent()){
-            throw new RuntimeException("La tâche n'existe pas !");
+            throw new TodoException("La tâche n'existe pas !");
         }
 
         todo.get().setCompleted(dto.completed());
@@ -76,7 +77,7 @@ public class TodoService {
      */
     public void deleteTodo(final Long id) {
         if(!this.todoRepository.existsById(id)){
-            throw new RuntimeException("La tâche n'existe pas !");
+            throw new TodoException("La tâche n'existe pas !");
         }
         this.todoRepository.deleteById(id);
     }

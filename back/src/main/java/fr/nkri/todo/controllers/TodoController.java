@@ -58,12 +58,7 @@ public class TodoController {
      */
     @PostMapping()
     public ResponseEntity<?> createTodo(@RequestBody TodoCreateDTO dto){
-        try{
-            return ResponseEntity.status(HttpStatus.CREATED).body(this.todoService.createTodo(dto));
-        }
-        catch (final RuntimeException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.todoService.createTodo(dto));
     }
 
     /**
@@ -72,12 +67,7 @@ public class TodoController {
      */
     @PutMapping()
     public ResponseEntity updateTodo(@RequestBody TodoUpdateDTO dto){
-        try{
-            return ResponseEntity.ok(this.todoService.updateTodo(dto));
-        }
-        catch (final RuntimeException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+        return ResponseEntity.ok(this.todoService.updateTodo(dto));
     }
 
     /**
@@ -85,13 +75,8 @@ public class TodoController {
      * @return any type of object: either a stain or an error
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTodo(@PathVariable Long id){
-        try{
-            this.todoService.deleteTodo(id);
-            return ResponseEntity.noContent().build();
-        }
-        catch (final RuntimeException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+    public ResponseEntity deleteTodo(@PathVariable Long id){
+        this.todoService.deleteTodo(id);
+        return ResponseEntity.noContent().build();
     }
 }
