@@ -62,12 +62,11 @@ public class TodoService {
             throw new RuntimeException("La tâche n'existe pas !");
         }
 
-        todo.get().setCompleted(dto.isCompleted());
+        todo.get().setCompleted(dto.completed());
         todo.get().setTitle(dto.title());
         todo.get().setDescription(dto.description());
-
         this.todoRepository.save(todo.get());
-
+        
         return todo.get();
     }
 

@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Box, Checkbox } from "@mui/material"
+import { Card, CardContent, Typography, Box, Checkbox, CircularProgress } from "@mui/material"
 import type { Todo } from "../models/todoModel"
 import { useState } from "react"
 
@@ -6,27 +6,32 @@ import { useState } from "react"
 Card props
 */
 type Props = {
-    todo: Todo
+    todo: Todo,
+
+    updateTodo : (todo: Todo) => Promise<Todo | null>,
+    loadingTodoId : number | null,
 }
 
 /*
 Display todo
 */
-export const TodoCard = ({ todo }: Props) => {
+export const TodoCard = ({ todo, updateTodo,  loadingTodoId}: Props) => {
     const [todoState, setTodoState] = useState<Todo>(todo);
+
+    //Loading update
+    const [loading, setLoading] = useState<number | null>(loadingTodoId);
 
     /*
     Change in the state of the todo
     */
-    const handleCompleted = (event : React.ChangeEvent<HTMLInputElement>) => {
-        setTodoState(
-            {
-                ...todoState,
-                isCompleted: event.target.checked
-            }
-        );
+    const handleCompleted = async (event : React.ChangeEvent<HTMLInputElement>) => {
+        const newTodo: Todo = {...todoState, completed: event.target.checked};
 
-        console.log(todoState);
+        const update = await updateTodo(newTodo);
+
+        if(update){
+            setTodoState(update);
+        }
     }
 
     return (
@@ -36,7 +41,13 @@ export const TodoCard = ({ todo }: Props) => {
                     <Typography variant="h6" component="div">
                         {todoState.title}
                     </Typography>
-                    <Checkbox checked={todoState.isCompleted} onChange={handleCompleted} />
+
+                    {loading === todo.id ? 
+                        (<CircularProgress/>) 
+                    : 
+                        ( <Checkbox checked={todoState.completed} onChange={handleCompleted} />)
+                    }
+                    
                 </Box>
                 
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">

@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react"
 import type { Todo } from "../models/todoModel";
-import { createTodo, getTodos } from "../services/todoService";
+import { createTodo, getTodos, updateTodo } from "../services/todoService";
 
 export const useTodo = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+
+    //loading update
+    const [loadingTodoId, setLodingTodoId] = useState<number | null>(null);
 
     /*
     Retrieve the to-do list
@@ -16,8 +19,7 @@ export const useTodo = () => {
             setError(null);
 
             const response = await getTodos();
-            setTodos(Array.isArray(response.data) ? response.data : []);
-            console.log(todos);
+            setTodos(response.data);
         }
         catch(err){
             setError("Une erreur est survenue lors de la récupération des données.");
@@ -31,16 +33,45 @@ export const useTodo = () => {
     /*
     Create a todo
     */
-    const newTodo = async (title: string, description: string) : Todo => {
+    const newTodo = async (title: string, description: string) : Promise<Todo | null>  => {
         try{
             const response = await createTodo(title, description);
             if(response.data){
-                console.log(response.data);
+                setTodos([...todos, response.data]);
+                return response.data;
             }
         }
         catch(err: any){
             setError(err.response.data ? err.response.data : "Une erreur est survenue lors de la création de la tache.");
         }
+
+        return null;
+    };
+
+    /*
+    Update a todo
+    */
+    const editTodo = async (todo : Todo) : Promise<Todo | null> => {
+        try{
+            setLodingTodoId(todo.id);
+
+            const response = await updateTodo(todo);
+            if(response.data){
+                setTodos(prev =>
+                    prev.map((t) => t.id === response.data.id ? response.data : t)
+                );
+
+                return response.data;
+            }
+        }
+        catch(err : any){
+            setError(err.response.data ? err.response.data : "Une erreur est survenue lors de la modification de la tache.");
+        }
+        finally{
+            setLodingTodoId(null);
+        }
+
+        return null;
     }
 
     /*
@@ -50,5 +81,5 @@ export const useTodo = () => {
         fetchTodos();
     }, []);
 
-    return {todos, newTodo, fetchTodos, loading, error}
+    return {todos, newTodo, editTodo, fetchTodos, loading, loadingTodoId, error}
 }

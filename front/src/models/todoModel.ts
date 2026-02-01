@@ -6,5 +6,5 @@ export type Todo = {
     title : string,
     description: string,
     date: number,
-    isCompleted : boolean
+    completed : boolean
 };

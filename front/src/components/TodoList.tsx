@@ -1,4 +1,3 @@
-import { Card } from "@mui/material";
 import type { Todo } from "../models/todoModel";
 import { TodoCard } from "./TodoCard";
 import { useEffect, useState } from "react";
@@ -8,13 +7,16 @@ Component props
 */
 type Props = {
     todos : Todo[],
-    titleFilter: string | null
+    titleFilter: string | null,
+
+    updateTodo : (todo: Todo) => Promise<Todo | null>,
+    loadingTodoId : number | null,
 }
 
 /*
 Displaying tasks on the page
 */
-export const TodoList = ({todos, titleFilter} : Props) => {
+export const TodoList = ({todos, titleFilter, updateTodo, loadingTodoId} : Props) => {
     const [filter, setFilter] = useState<string | null>(titleFilter);
 
     /*
@@ -32,11 +34,11 @@ export const TodoList = ({todos, titleFilter} : Props) => {
                     {
                         todos
                         .filter((todo) => 
-                            !todo.isCompleted
+                            !todo.completed
                             && (!filter || todo.title.toLowerCase().includes(filter.toLowerCase()))
                         )
                         .map((todo) => 
-                            <TodoCard key={todo.id} todo={todo}/>
+                            <TodoCard key={todo.id} todo={todo} updateTodo={updateTodo} loadingTodoId={loadingTodoId}/>
                         )
                     }
                 </ul>
@@ -48,11 +50,11 @@ export const TodoList = ({todos, titleFilter} : Props) => {
                     {
                         todos
                         .filter((todo) => 
-                            todo.isCompleted
+                            todo.completed
                             && (!filter || todo.title.toLowerCase().includes(filter.toLowerCase()))
                         )
                         .map((todo) => 
-                            <TodoCard key={todo.id} todo={todo}/>
+                            <TodoCard key={todo.id} todo={todo} updateTodo={updateTodo} loadingTodoId={loadingTodoId}/>
                         )
                     }
                 </ul>

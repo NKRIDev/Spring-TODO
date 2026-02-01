@@ -15,7 +15,7 @@ const lightTheme = createTheme({
 
 function App() {
   //Todos
-  const {todos, newTodo, fetchTodos, error, loading} = useTodo();
+  const {todos, newTodo, editTodo, error, loading, loadingTodoId} = useTodo();
 
   //Search bar filter
   const [titleFilter, setTitleFilter] = useState<string | null>(null);
@@ -30,6 +30,14 @@ function App() {
   const handleClose = () => {
     setCreateOpen(false);
   };
+
+  /*
+  Create a todo
+  */
+  const handleCreate = (title: string, description: string) => {
+    newTodo(title, description);
+    handleClose();
+  }
 
   /*
   Checked if the data is being loaded
@@ -52,10 +60,12 @@ function App() {
 
         <div className="flex flex-col space-y-10 items-center justify-center h-screen">
 
+          {/*Modal to create a new todo */}
           <CreateTodo
-           open={createOpen} 
-           onClose={handleClose}
-            onCreate={(title, description) => newTodo(title, description)}/>
+            open={createOpen} 
+            onClose={handleClose}
+            onCreate={handleCreate}
+          />
 
           {/*Search Bar */}
           <div className="sticky top-0 z-10 pt-10">
@@ -68,7 +78,7 @@ function App() {
           
           {/* Todo arrays */}
           <div className="flex-1 overflow-auto p-4">
-            <TodoList todos={todos} titleFilter={titleFilter}/>
+            <TodoList todos={todos} titleFilter={titleFilter} updateTodo={editTodo} loadingTodoId={loadingTodoId}/>
           </div>
 
         </div>

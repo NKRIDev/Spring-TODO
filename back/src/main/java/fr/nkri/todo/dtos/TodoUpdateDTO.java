@@ -4,6 +4,6 @@ public record TodoUpdateDTO (
         long id,
         String title,
         String description,
-        boolean isCompleted
+        boolean completed
 ){
 }
