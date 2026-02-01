@@ -11,11 +11,18 @@ create a todo
 */
 export const createTodo = (title : string, description : string) => {
     return api.post("/api/todos", {title, description});
-}
+};
 
 /*
 update a todo
 */
 export const updateTodo = (todo : Todo) => {
     return api.put("/api/todos", todo);
-}
+};
+
+/*
+Delete a todo
+*/
+export const removeTodo = (id : number) => {
+    return api.delete("/api/todos/" + id);
+};

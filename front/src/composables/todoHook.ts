@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import type { Todo } from "../models/todoModel";
-import { createTodo, getTodos, updateTodo } from "../services/todoService";
+import { createTodo, getTodos, removeTodo, updateTodo } from "../services/todoService";
 
 export const useTodo = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
@@ -72,7 +72,29 @@ export const useTodo = () => {
         }
 
         return null;
-    }
+    };
+    
+    /*
+    Delete a todo
+    */
+    const deleteTodo = async (todoId : number) => {
+        try{
+            setLodingTodoId(todoId);
+
+            const response = await removeTodo(todoId);
+            if(response){
+                setTodos(prev =>
+                    prev.filter((todo) => todo.id !== todoId)
+                );
+            }
+        }
+        catch(err : any){
+            setError(err.response.data ? err.response.data : "Une erreur est survenue lors de la suppression de la tache.");
+        }
+        finally{
+            setLodingTodoId(null);
+        }
+    };
 
     /*
     Update applicaiton
@@ -81,5 +103,5 @@ export const useTodo = () => {
         fetchTodos();
     }, []);
 
-    return {todos, newTodo, editTodo, fetchTodos, loading, loadingTodoId, error}
+    return {todos, newTodo, editTodo, deleteTodo, fetchTodos, loading, loadingTodoId, error}
 }

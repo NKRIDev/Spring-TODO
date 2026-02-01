@@ -11,12 +11,14 @@ type Props = {
 
     updateTodo : (todo: Todo) => Promise<Todo | null>,
     loadingTodoId : number | null,
+
+    deleteTodo : (id : number) => void,
 }
 
 /*
 Displaying tasks on the page
 */
-export const TodoList = ({todos, titleFilter, updateTodo, loadingTodoId} : Props) => {
+export const TodoList = ({todos, titleFilter, updateTodo, deleteTodo, loadingTodoId} : Props) => {
     const [filter, setFilter] = useState<string | null>(titleFilter);
 
     /*
@@ -38,7 +40,7 @@ export const TodoList = ({todos, titleFilter, updateTodo, loadingTodoId} : Props
                             && (!filter || todo.title.toLowerCase().includes(filter.toLowerCase()))
                         )
                         .map((todo) => 
-                            <TodoCard key={todo.id} todo={todo} updateTodo={updateTodo} loadingTodoId={loadingTodoId}/>
+                            <TodoCard key={todo.id} todo={todo} updateTodo={updateTodo} deleteTodo={deleteTodo} loadingTodoId={loadingTodoId}/>
                         )
                     }
                 </ul>
@@ -54,7 +56,7 @@ export const TodoList = ({todos, titleFilter, updateTodo, loadingTodoId} : Props
                             && (!filter || todo.title.toLowerCase().includes(filter.toLowerCase()))
                         )
                         .map((todo) => 
-                            <TodoCard key={todo.id} todo={todo} updateTodo={updateTodo} loadingTodoId={loadingTodoId}/>
+                            <TodoCard key={todo.id} todo={todo} updateTodo={updateTodo} deleteTodo={deleteTodo} loadingTodoId={loadingTodoId}/>
                         )
                     }
                 </ul>

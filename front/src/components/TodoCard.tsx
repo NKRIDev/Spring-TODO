@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Box, Checkbox, CircularProgress } from "@mui/material"
+import { Card, CardContent, Typography, Box, Checkbox, CircularProgress, Button } from "@mui/material"
 import type { Todo } from "../models/todoModel"
 import { useState } from "react"
 
@@ -10,16 +10,15 @@ type Props = {
 
     updateTodo : (todo: Todo) => Promise<Todo | null>,
     loadingTodoId : number | null,
+    
+    deleteTodo : (id : number) => void
 }
 
 /*
 Display todo
 */
-export const TodoCard = ({ todo, updateTodo,  loadingTodoId}: Props) => {
+export const TodoCard = ({ todo, updateTodo, deleteTodo, loadingTodoId}: Props) => {
     const [todoState, setTodoState] = useState<Todo>(todo);
-
-    //Loading update
-    const [loading, setLoading] = useState<number | null>(loadingTodoId);
 
     /*
     Change in the state of the todo
@@ -32,7 +31,14 @@ export const TodoCard = ({ todo, updateTodo,  loadingTodoId}: Props) => {
         if(update){
             setTodoState(update);
         }
-    }
+    };
+
+    /**
+     * Delete a todo
+     */
+    const handleDelete = () => {
+        deleteTodo(todoState.id);
+    };
 
     return (
         <Card>
@@ -41,13 +47,10 @@ export const TodoCard = ({ todo, updateTodo,  loadingTodoId}: Props) => {
                     <Typography variant="h6" component="div">
                         {todoState.title}
                     </Typography>
-
-                    {loading === todo.id ? 
-                        (<CircularProgress/>) 
-                    : 
-                        ( <Checkbox checked={todoState.completed} onChange={handleCompleted} />)
-                    }
                     
+                    <Checkbox checked={todoState.completed} onChange={handleCompleted} />
+
+                    <Button variant="outlined" onClick={handleDelete}>Supprimer</Button>
                 </Box>
                 
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
@@ -57,6 +60,11 @@ export const TodoCard = ({ todo, updateTodo,  loadingTodoId}: Props) => {
                 <Typography variant="body2" color="text.secondary">
                     {new Date(todoState.date).toLocaleDateString()}
                 </Typography>
+
+                {
+                    //Loading circle
+                    loadingTodoId === todo.id && <CircularProgress size={24}/>
+                }
             </CardContent>
         </Card>
     )

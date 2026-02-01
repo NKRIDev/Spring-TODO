@@ -15,7 +15,7 @@ const lightTheme = createTheme({
 
 function App() {
   //Todos
-  const {todos, newTodo, editTodo, error, loading, loadingTodoId} = useTodo();
+  const {todos, newTodo, editTodo, deleteTodo, error, loading, loadingTodoId} = useTodo();
 
   //Search bar filter
   const [titleFilter, setTitleFilter] = useState<string | null>(null);
@@ -78,7 +78,7 @@ function App() {
           
           {/* Todo arrays */}
           <div className="flex-1 overflow-auto p-4">
-            <TodoList todos={todos} titleFilter={titleFilter} updateTodo={editTodo} loadingTodoId={loadingTodoId}/>
+            <TodoList todos={todos} titleFilter={titleFilter} updateTodo={editTodo} deleteTodo={deleteTodo} loadingTodoId={loadingTodoId}/>
           </div>
 
         </div>

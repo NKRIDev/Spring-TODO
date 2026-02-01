@@ -66,7 +66,7 @@ public class TodoService {
         todo.get().setTitle(dto.title());
         todo.get().setDescription(dto.description());
         this.todoRepository.save(todo.get());
-        
+
         return todo.get();
     }
 
