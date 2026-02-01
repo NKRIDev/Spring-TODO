@@ -6,6 +6,7 @@ import { TodoList } from "./components/TodoList";
 import { mockTodos } from "./mocks/mockTodos";
 import { CreateTodo } from "./components/modals/CreateTodo";
 import { useTodo } from "./composables/todoHook";
+import { SnackbarProvider, useSnackbar } from 'notistack';
 
 const lightTheme = createTheme({
   palette: {
@@ -43,7 +44,11 @@ function App() {
   Checked if the data is being loaded
   */
   if (loading){
-    return <CircularProgress/>;
+    return (
+      <div className="flex h-screen items-center justify-center w-full">
+        <CircularProgress/>
+      </div>
+    );
   }
 
   /*
@@ -56,32 +61,34 @@ function App() {
   return (
     <>
       <ThemeProvider theme={lightTheme}>
-        <CssBaseline/>
+        <SnackbarProvider maxSnack={3}>
+          <CssBaseline/>
 
-        <div className="flex flex-col space-y-10 items-center justify-center h-screen">
+          <div className="flex flex-col space-y-10 items-center justify-center h-screen">
 
-          {/*Modal to create a new todo */}
-          <CreateTodo
-            open={createOpen} 
-            onClose={handleClose}
-            onCreate={handleCreate}
-          />
-
-          {/*Search Bar */}
-          <div className="sticky top-0 z-10 pt-10">
-            <TodoHeader 
-              todos={todos} 
-              onSearch={(value: string) => setTitleFilter(value)} 
-              onOpen={handleOpen}
+            {/*Modal to create a new todo */}
+            <CreateTodo
+              open={createOpen} 
+              onClose={handleClose}
+              onCreate={handleCreate}
             />
-          </div>
-          
-          {/* Todo arrays */}
-          <div className="flex-1 overflow-auto p-4">
-            <TodoList todos={todos} titleFilter={titleFilter} updateTodo={editTodo} deleteTodo={deleteTodo} loadingTodoId={loadingTodoId}/>
-          </div>
 
-        </div>
+            {/*Search Bar */}
+            <div className="sticky top-0 z-10 pt-10">
+              <TodoHeader 
+                todos={todos} 
+                onSearch={(value: string) => setTitleFilter(value)} 
+                onOpen={handleOpen}
+              />
+            </div>
+            
+            {/* Todo arrays */}
+            <div className="flex-1 overflow-auto p-4">
+              <TodoList todos={todos} titleFilter={titleFilter} updateTodo={editTodo} deleteTodo={deleteTodo} loadingTodoId={loadingTodoId}/>
+            </div>
+
+          </div>
+        </SnackbarProvider>
       </ThemeProvider>
     </>
   )

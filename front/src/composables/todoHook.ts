@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import type { Todo } from "../models/todoModel";
 import { createTodo, getTodos, removeTodo, updateTodo } from "../services/todoService";
+import { useSnackbar } from "notistack";
 
 export const useTodo = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
@@ -10,6 +11,8 @@ export const useTodo = () => {
     //loading update
     const [loadingTodoId, setLodingTodoId] = useState<number | null>(null);
 
+    const { enqueueSnackbar } = useSnackbar();
+    
     /*
     Retrieve the to-do list
     */
@@ -35,14 +38,19 @@ export const useTodo = () => {
     */
     const newTodo = async (title: string, description: string) : Promise<Todo | null>  => {
         try{
+            setLoading(true);
             const response = await createTodo(title, description);
             if(response.data){
                 setTodos([...todos, response.data]);
+                enqueueSnackbar('Tâche créée !', { variant: 'success' });
                 return response.data;
             }
         }
         catch(err: any){
             setError(err.response.data ? err.response.data : "Une erreur est survenue lors de la création de la tache.");
+        }
+        finally{
+            setLoading(false);
         }
 
         return null;
